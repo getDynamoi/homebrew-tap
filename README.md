@@ -5,6 +5,7 @@ Homebrew formulae for [Dynamoi](https://dynamoi.com): music promotion and distri
 ## Install
 
 ```sh
+brew trust getdynamoi/tap   # Homebrew 7+ requires trusting third-party taps
 brew install getdynamoi/tap/dynamoi
 ```
 
