@@ -1,0 +1,40 @@
+name: Update dynamoi formula
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-formula
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Bump formula to the latest npm release
+        run: |
+          set -euo pipefail
+          latest=$(curl -fsS https://registry.npmjs.org/dynamoi/latest | jq -r .version)
+          current=$(sed -nE 's#.*/dynamoi-([0-9][^"]*)\.tgz".*#\1#p' Formula/dynamoi.rb | head -n1)
+          echo "npm: $latest, formula: $current"
+          if [ "$latest" = "$current" ] || \
+             [ "$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -n1)" != "$latest" ]; then
+            echo "Formula is up to date; nothing to do."
+            exit 0
+          fi
+          url="https://registry.npmjs.org/dynamoi/-/dynamoi-${latest}.tgz"
+          sha=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
+          sed -i -E \
+            -e "s#^  url \".*\"#  url \"${url}\"#" \
+            -e "s#^  sha256 \".*\"#  sha256 \"${sha}\"#" \
+            Formula/dynamoi.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "dynamoi ${latest}"
+          git push
