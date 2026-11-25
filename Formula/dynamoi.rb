@@ -1,8 +1,8 @@
 class Dynamoi < Formula
   desc "Music promotion and distribution, built for AI agents"
   homepage "https://dynamoi.com"
-  url "https://registry.npmjs.org/dynamoi/-/dynamoi-0.2.11.tgz"
-  sha256 "7951e4bbc088d501a0c6a85c122956f23f5d256804373130eed9af9f6ef288f3"
+  url "https://registry.npmjs.org/dynamoi/-/dynamoi-0.2.12.tgz"
+  sha256 "0917aabf36aca169d79efe78ac078c251619b5f2153361d509c55be3fcebd986"
   license "MIT"
 
   depends_on "node"
